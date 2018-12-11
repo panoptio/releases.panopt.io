@@ -1,0 +1,6 @@
+stack       = "holocron"
+app         = "releases"
+environment = "prod"
+region      = "us-east-2"
+domain      = "panopt.io"
+bucket      = "releases.panopt.io"
