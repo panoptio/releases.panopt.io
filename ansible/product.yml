@@ -58,7 +58,11 @@
         object: "/index.html"
         src: "index.html"
         permission: public-read
+<<<<<<< HEAD
         overwrite: different
+=======
+        overwrite: different    
+>>>>>>> 7a8862311d9b60601ddcd3d1600b4fada92284b5
 
     - name: Upload Product index file
       s3:

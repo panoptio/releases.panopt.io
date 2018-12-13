@@ -14,11 +14,19 @@ variable "logs_expiration_days" { default = 30 }
 
 locals {
   bucket_name = "${var.bucket}"
+  short_host  = "${var.app}"
+  fqdn        = "${var.app}.${var.domain}"
   tags = {
         Stack       = "${var.stack}"
         App         = "${var.app}"
         Environment = "${var.environment}"
   }
+}
+
+// For use with ACM
+provider "aws" {
+  alias = "virginia"
+  region = "us-east-1"
 }
 
 /*
@@ -33,10 +41,11 @@ data "template_file" "policy" {
   }
 }
 
+// Setup the bucket we're going to use.
 resource "aws_s3_bucket" "b" {
   depends_on  = ["aws_s3_bucket.logs"]
   bucket    = "${local.bucket_name}"
-  acl       = "private"
+  acl       = "public-read"
 
   tags = "${merge(
     local.tags,
@@ -46,12 +55,42 @@ resource "aws_s3_bucket" "b" {
       )
   )}"
 
+  policy = <<POLICY
+{
+  "Version":"2012-10-17",
+  "Statement":[
+    {
+      "Sid":"AddPerm",
+      "Effect":"Allow",
+      "Principal": "*",
+      "Action":["s3:GetObject"],
+      "Resource":["arn:aws:s3:::${local.bucket_name}/*"]
+    }
+  ]
+}
+POLICY
+
+  website {
+    index_document = "index.html"
+    error_document = "404.html"
+  }
+
   logging {
     target_bucket = "${aws_s3_bucket.logs.id}"
     target_prefix = "logs/"
   }
 }
 
+// Stub out index.html page.
+resource "aws_s3_bucket_object" "index_html" {
+  bucket        = "${local.bucket_name}"
+  key           = "index.html"
+  source        = "files/index.html"
+  content_type  = "text/html"
+  etag          = "${md5(file("files/index.html"))}"
+}
+
+// Request Logging Bucket
 resource "aws_s3_bucket" "logs" {
   bucket = "${local.bucket_name}-logs"
   acl    = "log-delivery-write"
@@ -86,4 +125,8 @@ output "log_id" {
 
 output "id" {
   value = "${aws_s3_bucket.b.id}"
+}
+
+output "website_endpoint" {
+  value = "${aws_s3_bucket.b.website_endpoint}"
 }

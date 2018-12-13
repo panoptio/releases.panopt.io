@@ -56,26 +56,16 @@
 <body>
   <ul>
 
-    <li>
-      <a href="../">../</a>
-    </li>
-
-
-{% for type in item.type_suffix %}
   <li>
-<<<<<<< HEAD
-    {% if type == 'ipa' %}
-    <a href="itms-services://?action=download-manifest&url=https://{{ website_bucket }}/{{ release_product }}/{{ item.version }}/{{ product.name }}_{{ item.version }}.plist">{{ product.name }}_{{ item.version }}.{{ type }}</a>
-    {% else %}
-    <a href="{{ product.name }}_{{ item.version }}.{{ type }}">{{ product.name }}_{{ item.version }}.{{ type }}</a>
-    {% endif %}
-=======
-    <a href="{{ product.name }}_{{ item.version }}.{{ type }}">{{ product.name }}_{{ item.version }}.{{ type }}</a>
->>>>>>> 7a8862311d9b60601ddcd3d1600b4fada92284b5
+    <a href="../">../</a>
   </li>
 
-{% endfor %}
+{% for release in product.releases %}
+  <li>
+    <a href="{{ release.version }}/index.html">{{ release.version }}</a>
+  </li>
 
+{% endfor %} 
   </ul>
 
   <footer>
