@@ -35,6 +35,10 @@ variable "domain" {
   default     = "panopt.io"
 }
 
+variable "zone_id" {
+  description = "the Route53 zone_id we're going to update."
+}
+
 variable "bucket" {
   description = "The S3 bucket we will use to upload resources to."
 }
@@ -57,8 +61,14 @@ variable "logs_expiration_days" {
 /*
  * Setup our provider to define region, etc...
  */
- provider "aws" {
+provider "aws" {
   region = "${var.region}"
+}
+
+// For use with ACM
+provider "aws" {
+  alias = "virginia"
+  region = "us-east-1"
 }
 
 /*
@@ -84,6 +94,33 @@ module "s3" {
   common_tags             = "${var.common_tags}"
   region                  = "${var.region}"
 }
+
+module "acm" {
+  source                  = "./acm"
+  stack                   = "${var.stack}"
+  app                     = "${var.app}"
+  domain                  = "${var.domain}"
+  zone_id                 = "${var.zone_id}"
+  environment             = "${var.environment}"
+  bucket                  = "${var.bucket}"
+  common_tags             = "${var.common_tags}"
+  region                  = "${var.region}"
+}
+
+module "cloudfront" {
+  source                  = "./cloudfront"
+  stack                   = "${var.stack}"
+  app                     = "${var.app}"
+  domain                  = "${var.domain}"
+  zone_id                 = "${var.zone_id}"
+  acm_cert_arn            = "${module.acm.cert_arn}"
+  website_endpoint        = "${module.s3.website_endpoint}"
+  environment             = "${var.environment}"
+  bucket                  = "${var.bucket}"
+  common_tags             = "${var.common_tags}"
+  region                  = "${var.region}"
+}
+
 
 /*
  * Now we'll define our outputs
