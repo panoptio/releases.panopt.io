@@ -50,9 +50,9 @@ resource "aws_cloudfront_distribution" "distribution" {
     cached_methods         = ["GET", "HEAD"]
     // This needs to match the `origin_id` above.
     target_origin_id       = "${var.website_endpoint}"
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
+    min_ttl                = 60
+    default_ttl            = 300
+    max_ttl                = 86400
 
     forwarded_values {
       query_string = false
