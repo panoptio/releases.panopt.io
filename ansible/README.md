@@ -1,6 +1,6 @@
-# releases.panopt.io
+# releases.panopt.io - Ansible Playbook for static website generation
 
-Repo for managing the distributable binary S3 bucket `s3://releases.panopt.io`.
+Repo for managing the HTML and resources (distributable binaries) S3 bucket `s3://releases.panopt.io`.
 
 ## Creating HTML Markup for a specific product
 
@@ -27,4 +27,7 @@ That will use your localhost to generate templated HTML markup for every Product
 ---
 
 TODO:
-- better documentation
+* better documentation
+* write playbook for creating resources (manifests, etc..) and uploading distributable binaries to the S3 bucket.
+  * Document above
+
