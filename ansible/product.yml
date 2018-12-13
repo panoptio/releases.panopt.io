@@ -68,3 +68,14 @@
         src: "{{ release_product }}/index.html"
         permission: public-read
         overwrite: different
+
+    - name: Upload Version index file
+      s3:
+        bucket: "{{ website_bucket }}"
+        mode: put
+        object: "/{{ release_product }}/{{ item.version }}/index.html"
+        src: "{{ release_product }}/{{ item.version }}/index.html"
+        permission: public-read
+        overwrite: different
+      with_items:
+        - "{{ product.releases }}"
