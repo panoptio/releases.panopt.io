@@ -1,0 +1,81 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars_prompt:
+    - name: "release_product"
+      prompt: "Enter Product (flitter|shots)"
+      default: "flitter"
+
+  vars_files:
+    - vars/releases.yml
+
+  pre_tasks:
+    - name: "define product"
+      set_fact:
+        product: "{{ products[release_product] }}"
+
+    #- debug: var=product
+
+  tasks:
+    - name: Build root index page for all defined products
+      template:
+        src: templates/index_root.html.j2
+        dest: "index.html"
+      #with_items:
+      #  - "{{ products }}"
+
+    - name: Ensure Product directory
+      file:
+        state: directory
+        path: "{{ release_product }}"
+
+    - name: Ensure version directories for Product versions
+      file:
+        state: directory
+        path: "{{ release_product }}/{{ item.version }}"
+      with_items:
+        - "{{ product.releases }}"
+
+    - name: Update Product index file
+      template:
+        src: templates/index_product.html.j2
+        dest: "{{ release_product }}/index.html"
+
+    - name: Ensure Product version index files
+      template:
+        src: templates/index_version.html.j2
+        dest: "{{ release_product }}/{{ item.version }}/index.html"
+      with_items:
+        - "{{ product.releases }}"
+
+    - name: Upload Root index file
+      s3:
+        bucket: "{{ website_bucket }}"
+        mode: put
+        object: "/index.html"
+        src: "index.html"
+        permission: public-read
+        overwrite: different
+
+    - name: Upload Product index file
+      s3:
+        bucket: "{{ website_bucket }}"
+        mode: put
+        object: "/{{ release_product }}/index.html"
+        src: "{{ release_product }}/index.html"
+        permission: public-read
+        overwrite: different
+
+    - name: Upload Version index file
+      s3:
+        bucket: "{{ website_bucket }}"
+        mode: put
+        object: "/{{ release_product }}/{{ item.version }}/index.html"
+        src: "{{ release_product }}/{{ item.version }}/index.html"
+        permission: public-read
+        overwrite: different
+      with_items:
+        - "{{ product.releases }}"
