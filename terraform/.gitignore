@@ -1,6 +1,9 @@
 # Local environment management for Mike
 env.sh
 
+# Any terraform state configs
+config.tf
+
 # Local .terraform directories
 **/.terraform/*
 
