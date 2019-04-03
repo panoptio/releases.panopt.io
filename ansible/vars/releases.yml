@@ -14,7 +14,7 @@ products:
       - {version: "0.1.0", type_suffix: ["ipa","apk"], url: "https://google.com"}
       #- {version: "0.2.0", type_suffix: ["ipa","apk"], url: "https://google.com"}
 
-#  shots:
-#    name: "Shots"
-#    releases:
-#      - {version: "0.0.1", type_suffix: [".ipa"], url: "https://google.com"}
+  slainte:
+    name: "Slainte"
+    releases:
+      - {version: "0.0.1", type_suffix: ["ipa"], url: "https://google.com"}
