@@ -50,7 +50,7 @@
         - "{{ product.releases }}"
 
     - name: Upload Root index file
-      s3:
+      aws_s3:
         bucket: "{{ website_bucket }}"
         mode: put
         object: "/index.html"
@@ -59,7 +59,7 @@
         overwrite: different
 
     - name: Upload Product index file
-      s3:
+      aws_s3:
         bucket: "{{ website_bucket }}"
         mode: put
         object: "/{{ release_product }}/index.html"
@@ -68,7 +68,7 @@
         overwrite: different
 
     - name: Upload Version index file
-      s3:
+      aws_s3:
         bucket: "{{ website_bucket }}"
         mode: put
         object: "/{{ release_product }}/{{ item.version }}/index.html"
