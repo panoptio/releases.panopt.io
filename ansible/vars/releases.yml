@@ -22,3 +22,5 @@ products:
       - {version: "0.0.1", type_suffix: ["ipa"], url: "https://www.panopt.io"}
       - {version: "0.0.2", type_suffix: ["ipa"], url: "https://www.panopt.io"}
       - {version: "0.0.3", type_suffix: ["ipa"], url: "https://www.panopt.io"}
+      - {version: "0.0.4", type_suffix: ["ipa"], url: "https://www.panopt.io"}
+      - {version: "0.0.5", type_suffix: ["ipa"], url: "https://www.panopt.io"}
