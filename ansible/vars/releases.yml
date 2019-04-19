@@ -13,7 +13,7 @@ products:
     releases:
       #- {version: "0.1.0", type_suffix: ["ipa"], url: "https://www.panopt.io"}
       #- {version: "0.1.1", type_suffix: ["ipa"], url: "https://www.panopt.io"}
-      - {version: "0.1.2", type_suffix: ["ipa"], url: "https://www.panopt.io"}
+      - {version: "0.1.2", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
 
   slainte:
     name: "Slainte"
