@@ -1,0 +1,6 @@
+# Ignore ansible retry files.
+*.retry
+
+# Ingore generated HTML directories.
+slainte
+flitter
