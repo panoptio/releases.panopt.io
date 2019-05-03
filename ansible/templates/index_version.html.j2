@@ -64,9 +64,9 @@
 {% for type in item.type_suffix %}
   <li>
     {% if type == 'ipa' %}
-    <a href="itms-services://?action=download-manifest&url=https://{{ website_bucket }}/{{ release_product }}/{{ item.version }}/manifest.plist">{{ product.name }}_{{ item.version }}.{{ type }}</a>
+    <a href="itms-services://?action=download-manifest&url=https://{{ website_bucket }}/{{ release_product }}/{{ item.version }}/manifest.plist">{{ release_product }}_{{ item.version }}.{{ type }}</a>
     {% else %}
-    <a href="{{ product.name }}_{{ item.version }}.{{ type }}">{{ product.name }}_{{ item.version }}.{{ type }}</a>
+    <a href="{{ release_product }}_{{ item.version }}.{{ type }}">{{ release_product }}_{{ item.version }}.{{ type }}</a>
     {% endif %}
   </li>
 
