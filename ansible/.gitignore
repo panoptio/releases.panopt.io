@@ -1,6 +1,9 @@
 # Ignore ansible retry files.
 *.retry
 
+# Vault pass files...
+.vault_pass.txt
+
 # Ingore generated HTML directories.
 slainte
 flitter

@@ -1,0 +1,74 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars_prompt:
+    - name: "product"
+      prompt: "Enter product (slainte|flitter)"
+      default: "slainte"
+    - name: "version"
+      prompt: "Enter version number"
+    - name: "extension"
+      prompt: "Enter the file extension (ipa|apk)"
+    - name: "source"
+      prompt: "Enter distributable binary url location"
+      default: "http://eclipse:8081/repository/panoptio-apps/app"
+    - name: "auth_required"
+      prompt: "Artifactory authentication required? (true/false)"
+      default: true
+    - name: "target_bucket"
+      prompt: "The bucket you want the artifact deployed to."
+      default: "releases.panopt.io"
+
+  vars:
+    # These should be defined in vars/vault/secrets.yml and will be overwritten
+    # They are only here for documentation purposes.
+    artifact_username: "foo"
+    artifact_password: "bar"
+
+  tasks:
+    - name: Download distributable binary
+      get_url:
+        url: "{{ source }}"
+        tmp_dest: yes
+      register: local_copy
+      when: not auth_required
+    
+    - name: Include vault file if authentication required
+      include_vars: vars/vault/secrets.yml
+      when: auth_required
+    
+    - name: Download authenticated distributable binary
+      get_url:
+        url: "{{ source }}/{{ product }}/{{ version }}/{{ product}}.{{ extension }}"
+        dest: .
+        url_username: "{{ artifact_username }}"
+        url_password: "{{ artifact_password }}"
+      register: local_copy
+      when: auth_required
+
+    - name: Set the artifact target based on its file extension (ipa).
+      set_fact:
+        target_file: "{{ product }}.{{ extension }}"
+      when: extension == "ipa"
+
+    - name: Set the artifact target based on its file extension (apk).
+      set_fact:
+        target_file: "{{ product }}_{{ version }}.{{ extension }}"
+      when: extension == "apk"  
+
+    - name: Send artifact to S3 bucket. 
+      aws_s3:
+        bucket: "{{ target_bucket }}"
+        mode: put
+        object: "/{{ product }}/{{ version }}/{{ target_file }}"
+        src: "{{ local_copy.dest }}"
+        permission: public-read
+        overwrite: different
+
+    - name: Delete local copy of distributable artifact
+      file:
+        state: absent
+        path: "{{ local_copy.dest }}"
