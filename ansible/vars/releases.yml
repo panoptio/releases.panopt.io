@@ -27,3 +27,4 @@ products:
       - {version: "0.0.6", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
       - {version: "0.0.7", type_suffix: ["ipa"], url: "https://www.panopt.io"}
       - {version: "0.9.1", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
+      - {version: "0.9.2", type_suffix: ["ipa"], url: "https://www.panopt.io"}
