@@ -1,2 +1,8 @@
-ansible==2.5.1
-awscli==1.16.72
+boto3==1.9.146
+botocore==1.12.146
+docutils==0.14
+jmespath==0.9.4
+python-dateutil==2.8.0
+s3transfer==0.2.0
+six==1.12.0
+urllib3==1.24.3
