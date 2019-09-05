@@ -19,6 +19,8 @@ products:
       - {version: "0.2.3", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
       - {version: "0.4.1", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
       - {version: "0.4.2", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
+      - {version: "0.4.3", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
+      - {version: "0.4.4", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
 
   slainte:
     name: "Sláinte"
