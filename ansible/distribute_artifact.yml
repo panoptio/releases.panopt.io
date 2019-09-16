@@ -5,7 +5,7 @@
   gather_facts: yes
 
   vars_prompt:
-    - name: "product"
+    - name: "release_product"
       prompt: "Enter product (slainte|flitter)"
       default: "slainte"
     - name: "version"
@@ -22,11 +22,22 @@
       prompt: "The bucket you want the artifact deployed to."
       default: "releases.panopt.io"
 
+  vars_files:
+    - vars/releases.yml
+
   vars:
     # These should be defined in vars/vault/secrets.yml and will be overwritten
     # They are only here for documentation purposes.
     artifact_username: "foo"
     artifact_password: "bar"
+
+    product:
+      name: "{{ release_product }}"
+
+    item:
+      version: "{{  }}"
+
+    type: "{{ extension }}"
 
   tasks:
     - name: Download distributable binary
@@ -42,7 +53,7 @@
     
     - name: Download authenticated distributable binary
       get_url:
-        url: "{{ source }}/{{ product }}/{{ version }}/{{ product}}.{{ extension }}"
+        url: "{{ source }}/{{ release_product }}/{{ version }}/{{ release_product}}.{{ extension }}"
         dest: .
         url_username: "{{ artifact_username }}"
         url_password: "{{ artifact_password }}"
@@ -51,19 +62,19 @@
 
     - name: Set the artifact target based on its file extension (ipa).
       set_fact:
-        target_file: "{{ product }}.{{ extension }}"
+        target_file: "{{ release_product }}.{{ extension }}"
       when: extension == "ipa"
 
     - name: Set the artifact target based on its file extension (apk).
       set_fact:
-        target_file: "{{ product }}_{{ version }}.{{ extension }}"
+        target_file: "{{ release_product }}_{{ version }}.{{ extension }}"
       when: extension == "apk"  
 
     - name: Send artifact to S3 bucket. 
       aws_s3:
         bucket: "{{ target_bucket }}"
         mode: put
-        object: "/{{ product }}/{{ version }}/{{ target_file }}"
+        object: "/{{ release_product }}/{{ version }}/{{ target_file }}"
         src: "{{ local_copy.dest }}"
         permission: public-read
         overwrite: different
