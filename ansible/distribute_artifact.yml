@@ -72,3 +72,31 @@
       file:
         state: absent
         path: "{{ local_copy.dest }}"
+
+    - name: Ensure Product version index files
+      template:
+        src: templates/index_version.html.j2
+        dest: "{{ product }}/{{ version }}/index.html"
+
+    - name: Create Manifest files for IPAs
+      template:
+        src: templates/manifest.plist.j2
+        dest: "{{ product }}/{{ version }}/manifest.plist"
+
+    - name: Upload Version index file
+      aws_s3:
+        bucket: "{{ target_bucket }}"
+        mode: put
+        object: "/{{ product }}/{{ version }}/index.html"
+        src: "{{ product }}/{{ version }}/index.html"
+        permission: public-read
+        overwrite: different
+
+    - name: Upload the IPA manifest files for this release
+      aws_s3:
+        bucket: "{{ target_bucket }}"
+        mode: put
+        object: "/{{ product }}/{{ version }}/manifest.plist"
+        src: "{{ product }}/{{ version }}/manifest.plist"
+        permission: public-read
+        overwrite: different
