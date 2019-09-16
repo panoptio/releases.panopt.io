@@ -90,13 +90,36 @@
     - name: Ensure Product version index files
       template:
         src: templates/index_version.html.j2
-        dest: "{{ release_product }}/{{ version }}/index.html"
+        dest: "{{ release_product }}/{{ item.version }}/index.html"
       with_items:
         - "{{ releases }}"
 
     - name: Create Manifest files for IPAs
       template:
         src: templates/manifest.plist.j2
-        dest: "{{ release_product }}/{{ version }}/manifest.plist"
+        dest: "{{ release_product }}/{{ item.version }}/manifest.plist"
+      with_items:
+        - "{{ releases }}"
+      when: extension == "ipa"
+
+    - name: Upload Version index file
+      aws_s3:
+        bucket: "{{ website_bucket }}"
+        mode: put
+        object: "/{{ release_product }}/{{ item.version }}/index.html"
+        src: "{{ release_product }}/{{ item.version }}/index.html"
+        permission: public-read
+        overwrite: different
+      with_items:
+        - "{{ releases }}"
+
+    - name: Upload the IPA manifest files for this release
+      aws_s3:
+        bucket: "{{ website_bucket }}"
+        mode: put
+        object: "/{{ release_product }}/{{ item.version }}/manifest.plist"
+        src: "{{ release_product }}/{{ item.version }}/manifest.plist"
+        permission: public-read
+        overwrite: different
       with_items:
         - "{{ releases }}"
