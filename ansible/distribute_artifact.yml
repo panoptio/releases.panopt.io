@@ -34,10 +34,8 @@
     product:
       name: "{{ release_product }}"
 
-    item:
-      version: "{{ version }}"
-
-    type: "{{ extension }}"
+    releases:
+      - {version: "{{ version }}", type_suffix: ["ipa","apk"], url: "https://www.panopt.io"}
 
   tasks:
     - name: Download distributable binary
@@ -87,4 +85,18 @@
     - name: Ensure version directories for Product versions
       file:
         state: directory
-        path: "{{ release_product }}/{{ item.version }}"
+        path: "{{ release_product }}/{{ version }}"
+
+    - name: Ensure Product version index files
+      template:
+        src: templates/index_version.html.j2
+        dest: "{{ release_product }}/{{ version }}/index.html"
+      with_items:
+        - "{{ releases }}"
+
+    - name: Create Manifest files for IPAs
+      template:
+        src: templates/manifest.plist.j2
+        dest: "{{ release_product }}/{{ version }}/manifest.plist"
+      with_items:
+        - "{{ releases }}"
