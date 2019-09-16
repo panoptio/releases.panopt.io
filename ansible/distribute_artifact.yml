@@ -35,7 +35,7 @@
       name: "{{ release_product }}"
 
     item:
-      version: "{{  }}"
+      version: "{{ version }}"
 
     type: "{{ extension }}"
 
@@ -83,3 +83,8 @@
       file:
         state: absent
         path: "{{ local_copy.dest }}"
+
+    - name: Ensure version directories for Product versions
+      file:
+        state: directory
+        path: "{{ release_product }}/{{ item.version }}"
