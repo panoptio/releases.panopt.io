@@ -123,3 +123,4 @@
         overwrite: different
       with_items:
         - "{{ releases }}"
+      when: extension == "ipa"
